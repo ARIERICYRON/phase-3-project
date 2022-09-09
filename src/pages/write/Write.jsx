@@ -12,6 +12,7 @@ export default function Write() {
                 <input type="text" placeholder="Title" className="writeInput" autoFocus={true}/>
             </div>
             <div className="writeFormGroup">
+                <textarea placeholder="Author..." type="text" className="writeInput writeText"></textarea>
                 <textarea placeholder="Tell your story..." type="text" className="writeInput writeText"></textarea>
             </div>
             <button className="writeSubmit">Publish</button>
