@@ -1,23 +1,57 @@
 
 import "./post.css"
+import React, {useState, useEffect} from "react";
+import PostsContainer from "../postsContainer";
+import NewPostsForm from "../NewPostsForm";
 
 export default function Post() {
-  return (
-    <div className="posts">
-        <img className="postImg" 
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYYQgGl3mCuW1elhPDAtKV4acgblZCjNGZxnOzBxRb&s"
-        alt=""
+  const [posts, setPosts] = useState([]);
+  const [formVisible, setVisibleForm] = useState(true);
+  const [favoriteVisible, setFavoriteVisible] = useState(true);
+  const postsToDisplay = posts.filter((posts) => favoriteVisible || posts.isFavorite);
+
+  useEffect(() => {
+    fetch("http://localhost:9292")
+      .then(res => res.json())
+      .then(data => setPosts(data))
+  }, []);
+
+  function addingPosts(newPosts) {
+    setPosts([...posts, newPosts]);
+  }
+
+  function removingPosts(postsToRemove) {
+    setPosts(posts.filter(posts => posts.id !== postsToRemove.id))
+  }
+
+  function addingToFavorites(favPosts) {
+    setPosts(posts.map(posts => {
+      return posts.id === favPosts.id ? {...favPosts, isFavorite: !favPosts.isFavorite} : posts
+      }  
+    ))
+  }
+
+  function postsViewRendering() {
+    if (postsToDisplay.length === 0 && !favoriteVisible) {
+      return (<h1>You have no favorites added</h1>)
+    } else {
+      return (
+        <PostsContainer
+          posts={postsToDisplay} 
+          removePosts={removingPosts} 
+          addToFavorites={addingToFavorites}
         />
-        <div className="postInfo">
-            <div className="postCata">
-                <span className="postCat">Music</span>
-                <span className="postCat"></span>
-            </div>
-            <span className="postTitle">Lorem ipsum </span>
-            <hr />
-            <span className="postDate">1 hour Ago</span>
-            <p className="postDesc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, ipsum adipisci nam nisi culpa impedit, cumque optio, ab rem quasi quae at est ea delectus error! Fugit illo architecto eos.</p>
-        </div>
+      )
+    }
+  }
+  return (
+    <div className="app">
+      <div className="sidebar">
+        <button onClick={()=> setVisibleForm(!formVisible)}>Show/hide new posts form</button>
+        {true ? <NewPostsForm addingPosts={addingPosts}/> : null}
+        <button onClick={()=> setFavoriteVisible(!favoriteVisible)} >Show/hide Favorite posts</button>      
+      </div>
+      {postsViewRendering()}
     </div>
   )
 }
