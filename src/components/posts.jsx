@@ -1,15 +1,16 @@
 import React,{useState} from "react";
 
-function Posts({posts, removePosts, addToFavorites}) {
+function Posts({posts, addToFavorites, onDeletePosts}) {
   const {title, content, author} = posts;
   const [isRead, IsReadSet] = useState(false)
 
   function deletingClick(e) {
     e.preventDefault();
-    fetch(`${"http://localhost:9292"}/${posts.id}`, {
+    fetch(`{"http://localhost:9292"}/${posts}`, {
       method: "DELETE",
-    });
-    removePosts(posts);
+    })
+    .then((r) => r.json())
+    .then((deletedPosts) => onDeletePosts(deletedPosts));
   }
 
   return (

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 
-function NewPostsForm({addPosts}) {
+function NewPostsForm({onAddPosts}) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
@@ -20,7 +20,7 @@ function NewPostsForm({addPosts}) {
       }),
     })
       .then((r) => r.json())
-      .then((newPosts) => addPosts(newPosts));
+      .then((newPosts) => onAddPosts(newPosts));
 
     setTitle("");
     setContent("");
